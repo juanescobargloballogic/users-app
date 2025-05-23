@@ -1,0 +1,34 @@
+@startuml
+actor User
+participant "UserSignUpController" as USC
+participant "UserService" as US
+participant "UserRepository" as UR
+participant "PhoneRepository" as PR
+participant "JwtUtil" as JU
+participant "H2 Database" as DB
+
+User -> USC : POST /users/sign-up (UserRequest)
+USC -> US : createUser(request)
+
+US -> UR : findByEmail(request.email)
+UR --> US : Optional.empty (email not found)
+
+US -> UserTransformer : toEntity(request, encodedPassword, true)
+US -> JU : encodePassword(request.password)
+JU --> US : encodedPassword
+
+US -> UR : save(UserEntity)
+UR --> US : UserEntity with ID + timestamps
+
+alt request.phones is NOT empty
+    US -> PhoneTransformer : toEntityList(request.phones, user)
+    US -> PR : saveAll(PhoneEntities)
+    PR --> US : List<PhoneEntities>
+end
+
+US -> JU : generateToken(user.email)
+JU --> US : JWT token
+
+US --> USC : UserResponse
+USC --> User : 200 OK + UserResponse
+@enduml

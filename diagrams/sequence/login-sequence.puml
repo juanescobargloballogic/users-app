@@ -1,0 +1,22 @@
+@startuml
+actor User
+participant "LoginController" as LC
+participant "LoginService" as LS
+participant "JwtUtil" as JU
+participant "UserRepository" as UR
+
+User -> LC : GET /users/login (Authorization)
+LC -> LS : login(authHeader)
+LS -> JU : isTokenValid(token)
+JU --> LS : true
+LS -> JU : extractEmail(tpoken)
+JU --> LS : "user@mail.com"
+LS -> UR : findByEmail(email)
+UR --> LS : UserEntity
+LS -> JU : generateToken(email)
+JU --> LS : newToken
+LS -> UR : save(user) // update lastLogin
+UR --> LS : updatedUser
+LS --> LC : UserResponse
+LC --> User : 200 OK + UserResponse
+@enduml

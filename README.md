@@ -58,6 +58,23 @@ Retrieves user info using a valid JWT token (sent as Authorization: Bearer <toke
 ```
 GET /users/login
 ```
+## Architecture Diagrams
+The architecture and sequence diagrams included in this project were created using the following free web-based tool:
+
+PlantText UML Live Editor – for .puml text-based diagrams (component and sequence diagrams)
+
+https://www.planttext.com/
+
+All source files are located under the /diagrams directory and can be opened or edited in the respective tool.
+
+### Component Diagram
+![Component Diagram](diagrams/components/component-diagram.png)
+
+### Login Sequence
+![Login Sequence](diagrams/sequence/login-sequence.png)
+
+### Sign-up Sequence
+![Sign-up Sequence](diagrams/sequence/signup-sequence.png)
 
 
 

@@ -1,0 +1,15 @@
+@startuml
+package "User Management API" {
+
+  [LoginController] --> [LoginService]
+  [UserSignUpController] --> [UserService]
+  [UserService] --> [UserRepository]
+  [LoginService] --> [UserRepository]
+  [LoginService] --> [JwtUtil]
+  [UserService] --> [PhoneRepository]
+  [UserService] --> [JwtUtil]
+
+  [UserRepository] --> [H2 Database]
+  [PhoneRepository] --> [H2 Database]
+}
+@enduml

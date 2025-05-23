@@ -47,3 +47,10 @@ gradle-app.properties
 *.war
 *.ear
 
+# Allow tracked diagrams
+!diagrams/
+!diagrams/**/*.puml
+!diagrams/**/*.drawio
+!diagrams/**/*.png
+
+
