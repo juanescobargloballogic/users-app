@@ -5,12 +5,12 @@
 *.log
 
 # Compiled class files
-/build/
-/out/
+**/build/
+out/
 
 # Gradle
 .gradle/
-/build/
+**/build/
 !gradle/wrapper/gradle-wrapper.jar
 
 # Gradle distribution

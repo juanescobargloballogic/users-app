@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.users.app.transformer.UserTransformerTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-05-23T03:34:20.992Z" hostname="BOG1-LMC-MXMH2TWDJ5" time="0.003">
-  <properties/>
-  <testcase name="testToEntity_shouldTransformUserRequestToUserEntity()" classname="com.users.app.transformer.UserTransformerTest" time="0.002"/>
-  <testcase name="testToUserResponse_shouldTransformUserEntityToUserResponse()" classname="com.users.app.transformer.UserTransformerTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

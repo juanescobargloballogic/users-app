@@ -1,3 +1,0 @@
-n22:34:20.511 [Test worker] INFO com.users.app.service.impl.LoginServiceImpl - Extracted email: name@email.com
-n22:34:20.518 [Test worker] INFO com.users.app.service.impl.LoginServiceImpl - Extracted email: name@email.com
-n22:34:20.521 [Test worker] INFO com.users.app.service.impl.LoginServiceImpl - Extracted email: name@email.com
