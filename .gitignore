@@ -1,0 +1,49 @@
+# === Java / Gradle ===
+*.class
+*.jar
+*.war
+*.log
+
+# Compiled class files
+/build/
+/out/
+
+# Gradle
+.gradle/
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Gradle distribution
+gradle-app.setting
+gradle-app.properties
+
+# === IntelliJ IDEA ===
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# === OS-specific ===
+.DS_Store          # macOS
+
+# === Logs & Temp ===
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+
+# === Test reports / coverage ===
+/test-output/
+/coverage/
+/jacoco.exec
+
+# === Ignore generated reports ===
+/build/reports/
+
+# === User-specific files ===
+*.class
+*.jar
+*.war
+*.ear
+

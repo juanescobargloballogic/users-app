@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.users.app.transformer.PhoneTransformerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2025-05-23T03:34:20.989Z" hostname="BOG1-LMC-MXMH2TWDJ5" time="0.003">
+  <properties/>
+  <testcase name="testToDTOList_shouldTransformPhoneEntityListToDTOList()" classname="com.users.app.transformer.PhoneTransformerTest" time="0.001"/>
+  <testcase name="testToEntityList_shouldTransformPhoneDTOListToEntityList()" classname="com.users.app.transformer.PhoneTransformerTest" time="0.0"/>
+  <testcase name="testToDTOList_shouldReturnEmptyListWhenInputIsEmpty()" classname="com.users.app.transformer.PhoneTransformerTest" time="0.001"/>
+  <testcase name="testToDTOList_shouldReturnEmptyListWhenInputIsNull()" classname="com.users.app.transformer.PhoneTransformerTest" time="0.0"/>
+  <testcase name="testToEntityList_shouldReturnEmptyListWhenInputIsEmpty()" classname="com.users.app.transformer.PhoneTransformerTest" time="0.0"/>
+  <testcase name="testToEntityList_shouldReturnEmptyListWhenInputIsNull()" classname="com.users.app.transformer.PhoneTransformerTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

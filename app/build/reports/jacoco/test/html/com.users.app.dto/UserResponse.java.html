@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.users.app.dto</a> &gt; <span class="el_source">UserResponse.java</span></div><h1>UserResponse.java</h1><pre class="source lang-java linenums">package com.users.app.dto;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+import org.h2.engine.User;
+
+public class UserResponse {
+
+    private UUID id;
+    private String name;
+    private String email;
+    private String password;
+    private LocalDateTime created;
+    private LocalDateTime lastLogin;
+    private String token;
+    private boolean isActive;
+    private List&lt;PhoneDTO&gt; phones;
+
+<span class="fc" id="L21">    public UserResponse(UUID id, LocalDateTime created, LocalDateTime lastLogin, String token, boolean isActive) {</span>
+<span class="fc" id="L22">        this.id = id;</span>
+<span class="fc" id="L23">        this.created = created;</span>
+<span class="fc" id="L24">        this.lastLogin = lastLogin;</span>
+<span class="fc" id="L25">        this.token = token;</span>
+<span class="fc" id="L26">        this.isActive = isActive;</span>
+<span class="fc" id="L27">    }</span>
+
+<span class="fc" id="L29">    public UserResponse() {</span>
+
+<span class="fc" id="L31">    }</span>
+
+    public UUID getId() {
+<span class="fc" id="L34">        return id;</span>
+    }
+
+    public void setId(UUID id) {
+<span class="fc" id="L38">        this.id = id;</span>
+<span class="fc" id="L39">    }</span>
+
+    public String getName() {
+<span class="fc" id="L42">        return name;</span>
+    }
+
+    public void setName(String name) {
+<span class="fc" id="L46">        this.name = name;</span>
+<span class="fc" id="L47">    }</span>
+
+    public String getEmail() {
+<span class="fc" id="L50">        return email;</span>
+    }
+
+    public void setEmail(String email) {
+<span class="fc" id="L54">        this.email = email;</span>
+<span class="fc" id="L55">    }</span>
+
+    public String getPassword() {
+<span class="fc" id="L58">        return password;</span>
+    }
+
+    public void setPassword(String password) {
+<span class="fc" id="L62">        this.password = password;</span>
+<span class="fc" id="L63">    }</span>
+
+    public LocalDateTime getCreated() {
+<span class="fc" id="L66">        return created;</span>
+    }
+
+    public void setCreated(LocalDateTime created) {
+<span class="fc" id="L70">        this.created = created;</span>
+<span class="fc" id="L71">    }</span>
+
+    public LocalDateTime getLastLogin() {
+<span class="fc" id="L74">        return lastLogin;</span>
+    }
+
+    public void setLastLogin(LocalDateTime lastLogin) {
+<span class="fc" id="L78">        this.lastLogin = lastLogin;</span>
+<span class="fc" id="L79">    }</span>
+
+    public String getToken() {
+<span class="fc" id="L82">        return token;</span>
+    }
+
+    public void setToken(String token) {
+<span class="fc" id="L86">        this.token = token;</span>
+<span class="fc" id="L87">    }</span>
+
+    public boolean isActive() {
+<span class="fc" id="L90">        return isActive;</span>
+    }
+
+    public void setActive(boolean active) {
+<span class="fc" id="L94">        isActive = active;</span>
+<span class="fc" id="L95">    }</span>
+
+    public List&lt;PhoneDTO&gt; getPhones() {
+<span class="fc" id="L98">        return phones;</span>
+    }
+
+    public void setPhones(List&lt;PhoneDTO&gt; phones) {
+<span class="fc" id="L102">        this.phones = phones;</span>
+<span class="fc" id="L103">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

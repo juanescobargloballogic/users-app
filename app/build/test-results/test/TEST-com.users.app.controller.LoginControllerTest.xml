@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.users.app.controller.LoginControllerTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-05-23T03:34:20.046Z" hostname="BOG1-LMC-MXMH2TWDJ5" time="0.34">
+  <properties/>
+  <testcase name="testLogin_shouldReturnUserResponseFromService()" classname="com.users.app.controller.LoginControllerTest" time="0.34"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
