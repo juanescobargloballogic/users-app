@@ -20,12 +20,12 @@ import com.users.app.dto.UserResponse;
 import com.users.app.entity.PhoneEntity;
 import com.users.app.entity.UserEntity;
 import com.users.app.exception.UserAlreadyExistsException;
+import com.users.app.util.JwtUtil;
 import com.users.app.repository.PhoneRepository;
 import com.users.app.repository.UserRepository;
 import com.users.app.service.impl.UserServiceImpl;
 import com.users.app.testdata.UserEntityObjectMother;
 import com.users.app.transformer.UserTransformer;
-import com.users.app.util.JwtUtil;
 
 import static java.util.function.Function.*;
 

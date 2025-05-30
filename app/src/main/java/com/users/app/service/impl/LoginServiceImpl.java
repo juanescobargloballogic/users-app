@@ -2,23 +2,31 @@ package com.users.app.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.users.app.dto.AuthenticatedUser;
 import com.users.app.dto.PhoneDTO;
 import com.users.app.dto.UserResponse;
 import com.users.app.entity.UserEntity;
 import com.users.app.exception.NotFoundException;
 import com.users.app.exception.UnauthorizedException;
+import com.users.app.util.JwtUtil;
 import com.users.app.repository.PhoneRepository;
 import com.users.app.repository.UserRepository;
 import com.users.app.service.LoginService;
 import com.users.app.transformer.PhoneTransformer;
 import com.users.app.transformer.UserTransformer;
-import com.users.app.util.JwtUtil;
 
+/**
+ * Implements the login process using Spring Security context.
+ * Assumes the user has already been authenticated by the {@link com.users.app.filter.JwtAuthenticationFilter} security filter.
+ */
 @Service
 public class LoginServiceImpl implements LoginService {
 
@@ -36,18 +44,26 @@ public class LoginServiceImpl implements LoginService {
         this.phoneRepository = phoneRepository;
     }
 
+    /**
+     * Retrieves the currently authenticated user from the SecurityContext,
+     * updates their last login timestamp, generates a new JWT token,
+     * and returns the user's information.
+     *
+     * @return UserResponse containing user details and a new JWT token
+     * @throws UnauthorizedException if no authenticated user is present
+     */
     @Override
-    public UserResponse login(final String auth) {
-        String token = auth.replace("Bearer ", "");
+    public UserResponse login() {
 
-        if (!jwtUtil.isTokenValid(token)) {
-            throw new UnauthorizedException("Invalid or expired token");
-        }
+        AuthenticatedUser authenticatedUser = Optional.ofNullable(SecurityContextHolder.getContext())
+            .map(SecurityContext::getAuthentication)
+            .filter(a -> a.getPrincipal() != null && a.getPrincipal() instanceof AuthenticatedUser)
+            .map(a -> (AuthenticatedUser) a.getPrincipal())
+            .orElseThrow(() -> new UnauthorizedException("Unauthorized user"));
 
-        String email = jwtUtil.extractEmail(token);
-        logger.info("Extracted email: {}", email);
+        logger.info("Authenticated user: {}", authenticatedUser);
 
-        UserEntity user = userRepository.findByEmail(email)
+        UserEntity user = userRepository.findById(authenticatedUser.getId())
             .orElseThrow(() -> new NotFoundException("User not found"));
 
         if (!user.isActive()) {
@@ -62,7 +78,5 @@ public class LoginServiceImpl implements LoginService {
 
         return UserTransformer.toUserResponse(user, userPhones, newToken);
     }
-
-
 
 }

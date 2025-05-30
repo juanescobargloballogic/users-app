@@ -5,8 +5,11 @@ import javax.validation.constraints.Pattern;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class UserRequest {
 
+    @Schema(description = "User name", example = "Juan")
     private String name;
 
     @NotBlank
@@ -14,6 +17,7 @@ public class UserRequest {
         regexp = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$",
         message = "Invalid email format. Expected format: aaaaaaa@domain.tld"
     )
+    @Schema(description = "User email", example = "juan@test.com")
     private String email;
 
     @NotBlank
@@ -21,8 +25,10 @@ public class UserRequest {
         regexp = "^(?=.*[A-Z])(?=(?:.*\\d.*){2})[a-zA-Z\\d]{8,12}$",
         message = "Password must have one uppercase, two digits, and be 8-12 characters"
     )
+    @Schema(description = "Password", example = "a2asfGfdfdf4")
     private String password;
 
+    @Schema(description = "User phone list")
     private List<PhoneDTO> phones;
 
     public String getName() {

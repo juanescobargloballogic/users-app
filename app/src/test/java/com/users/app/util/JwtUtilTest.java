@@ -53,4 +53,3 @@ public class JwtUtilTest {
         assertThat(jwtUtil.isTokenValid(tampered)).isFalse();
     }
 }
-

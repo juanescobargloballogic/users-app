@@ -1,5 +1,6 @@
 package com.users.app.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,21 +11,29 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.users.app.dto.AuthenticatedUser;
 import com.users.app.dto.UserResponse;
 import com.users.app.entity.PhoneEntity;
 import com.users.app.entity.UserEntity;
 import com.users.app.exception.NotFoundException;
 import com.users.app.exception.UnauthorizedException;
+import com.users.app.util.JwtUtil;
 import com.users.app.repository.PhoneRepository;
 import com.users.app.repository.UserRepository;
 import com.users.app.service.impl.LoginServiceImpl;
-import com.users.app.util.JwtUtil;
+import com.users.app.testdata.AuthenticatedUserObjectMother;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import static com.users.app.testdata.PhoneEntityObjectMother.*;
 import static com.users.app.testdata.UserEntityObjectMother.defaultUser;
@@ -42,36 +51,46 @@ public class LoginServiceImplTest {
 
     private static final String EMAIL = "name@email.com";
 
+    private static final AuthenticatedUser AUTHENTICATED_USER = AuthenticatedUserObjectMother.withEmail(EMAIL);
+
     private static final String TOKEN =
         "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.ANCf_8p1AE4ZQs7QuqGAyyfTEgYrKSjKWkhBk5cIn1_2QVr2jEjmM-1tu7EgnyOf_fAsvdFXva8Sv05iTGzETg";
 
-    private static final String AUTH_HEADER =
-        "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdWFuLnBlcmV6QGV4YW1wbGUiLCJpYXQiOjE3NDc4ODM0MDMsImV4cCI6MTc0Nzk2OTgwM30.6BkXA50UOTip9nFd_UMKqmYGcuFX2F0cUTDNAQmnJU90_ocum3BU_7CV0pVYHsB-Am1zd1PHidKy9Vz-h7ZgsQ";
-
     @BeforeEach
     public void setup() {
-        this.userRepository = Mockito.mock(UserRepository.class);
-        this.phoneRepository = Mockito.mock(PhoneRepository.class);
-        this.jwtUtil = Mockito.mock(JwtUtil.class);
+        this.userRepository = mock(UserRepository.class);
+        this.phoneRepository = mock(PhoneRepository.class);
+        this.jwtUtil = mock(JwtUtil.class);
 
         this.loginService = new LoginServiceImpl(jwtUtil, userRepository, phoneRepository);
+
+        // Create authentication token
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+            AUTHENTICATED_USER, null, Collections.emptyList()
+        );
+
+        // Mock the SecurityContext
+        SecurityContext context = mock(SecurityContext.class);
+        when(context.getAuthentication()).thenReturn(auth);
+
+        // Set the context into the static holder
+        SecurityContextHolder.setContext(context);
     }
 
     @Test
     public void testLogin_shouldReturnUserInfo() {
-        Mockito.when(jwtUtil.isTokenValid(Mockito.anyString())).thenReturn(true);
-        Mockito.when(jwtUtil.extractEmail(Mockito.anyString())).thenReturn(EMAIL);
-        Mockito.when(jwtUtil.generateToken(Mockito.eq(EMAIL))).thenReturn(TOKEN);
+        when(jwtUtil.generateToken(Mockito.eq(EMAIL))).thenReturn(TOKEN);
         final UserEntity user = defaultUser(EMAIL);
-        Mockito.when(userRepository.findByEmail(Mockito.eq(EMAIL))).thenReturn(Optional.of(user));
+        when(userRepository.findById(Mockito.eq(AUTHENTICATED_USER.getId()))).thenReturn(Optional.of(user));
         final List<PhoneEntity> userPhones = userPhoneList(user);
-        Mockito.when(phoneRepository.findAllByUser(Mockito.eq(user))).thenReturn(userPhones);
+        when(phoneRepository.findAllByUser(Mockito.eq(user))).thenReturn(userPhones);
 
         final ArgumentCaptor<UserEntity> userEntityArgumentCaptor = ArgumentCaptor.forClass(UserEntity.class);
 
-        final UserResponse response = loginService.login(AUTH_HEADER);
+        final UserResponse response = loginService.login();
 
-        Mockito.verify(userRepository).save(userEntityArgumentCaptor.capture());
+        verify(userRepository).save(userEntityArgumentCaptor.capture());
+        verify(jwtUtil).generateToken(Mockito.eq(EMAIL));
 
         assertEquals(user.getId(), response.getId());
         assertEquals(user.getEmail(), response.getEmail());
@@ -94,36 +113,82 @@ public class LoginServiceImplTest {
     }
 
     @Test
-    public void testLogin_shouldThrowUnauthorizedExceptionWhenTokenIsNotValid() {
-        Mockito.when(jwtUtil.isTokenValid(Mockito.anyString())).thenReturn(false);
+    public void testLogin_shouldThrowUnauthorizedExceptionWhenContextIsCleared() {
+        SecurityContextHolder.clearContext();
 
         UnauthorizedException ex = assertThrows(UnauthorizedException.class, () ->
-            loginService.login(AUTH_HEADER)
+            loginService.login()
         );
-        assertEquals("Invalid or expired token", ex.getMessage());
+        assertEquals("Unauthorized user", ex.getMessage());
+    }
+
+    @Test
+    public void testLogin_shouldThrowUnauthorizedExceptionWhenContextDoesNotHaveAuthenticationObject() {
+
+        // Mock the SecurityContext
+        SecurityContext context = mock(SecurityContext.class);
+        when(context.getAuthentication()).thenReturn(null);
+        SecurityContextHolder.setContext(context);
+
+        UnauthorizedException ex = assertThrows(UnauthorizedException.class, () ->
+            loginService.login()
+        );
+        assertEquals("Unauthorized user", ex.getMessage());
+    }
+
+    @Test
+    public void testLogin_shouldThrowUnauthorizedExceptionWhenPrincipalIsNotAnInstanceOfAuthenticatedUser() {
+
+        // Mock the SecurityContext
+        SecurityContext context = mock(SecurityContext.class);
+        // Create authentication token
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+            EMAIL, null, Collections.emptyList()
+        );
+        when(context.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(context);
+
+        UnauthorizedException ex = assertThrows(UnauthorizedException.class, () ->
+            loginService.login()
+        );
+        assertEquals("Unauthorized user", ex.getMessage());
+    }
+
+    @Test
+    public void testLogin_shouldThrowUnauthorizedExceptionWhenPrincipalIsNull() {
+
+        // Mock the SecurityContext
+        SecurityContext context = mock(SecurityContext.class);
+        // Create authentication token
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+            null, null, Collections.emptyList()
+        );
+        when(context.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(context);
+
+        UnauthorizedException ex = assertThrows(UnauthorizedException.class, () ->
+            loginService.login()
+        );
+        assertEquals("Unauthorized user", ex.getMessage());
     }
 
     @Test
     public void testLogin_shouldThrowNotFoundExceptionWhenUserDoesNotExist() {
-        Mockito.when(jwtUtil.isTokenValid(Mockito.anyString())).thenReturn(true);
-        Mockito.when(jwtUtil.extractEmail(Mockito.anyString())).thenReturn(EMAIL);
-        Mockito.when(userRepository.findByEmail(Mockito.eq(EMAIL))).thenReturn(Optional.empty());
+        when(userRepository.findById(Mockito.eq(AUTHENTICATED_USER.getId()))).thenReturn(Optional.empty());
 
         NotFoundException ex = assertThrows(NotFoundException.class, () ->
-            loginService.login(AUTH_HEADER)
+            loginService.login()
         );
         assertEquals("User not found", ex.getMessage());
     }
 
     @Test
     public void testLogin_shouldThrowUnauthorizedExceptionWhenUserIsNotActive() {
-        Mockito.when(jwtUtil.isTokenValid(Mockito.anyString())).thenReturn(true);
-        Mockito.when(jwtUtil.extractEmail(Mockito.anyString())).thenReturn(EMAIL);
         final UserEntity user = inactiveUser(EMAIL);
-        Mockito.when(userRepository.findByEmail(Mockito.eq(EMAIL))).thenReturn(Optional.of(user));
+        when(userRepository.findById(Mockito.eq(AUTHENTICATED_USER.getId()))).thenReturn(Optional.of(user));
 
         UnauthorizedException ex = assertThrows(UnauthorizedException.class, () ->
-            loginService.login(AUTH_HEADER)
+            loginService.login()
         );
         assertEquals("User is not active", ex.getMessage());
     }

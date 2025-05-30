@@ -3,15 +3,20 @@ package com.users.app.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class PhoneDTO {
 
     @NotNull
+    @Schema(description = "Phone number", example = "3001231212")
     private Long number;
 
     @NotNull
+    @Schema(description = "City code", example = "4")
     private Integer cityCode;
 
     @NotBlank
+    @Schema(description = "Country code", example = "57")
     private String countryCode;
 
     public Long getNumber() {

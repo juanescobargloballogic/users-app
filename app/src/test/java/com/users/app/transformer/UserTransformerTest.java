@@ -1,5 +1,6 @@
 package com.users.app.transformer;
 
+import com.users.app.dto.AuthenticatedUser;
 import com.users.app.dto.UserRequest;
 import com.users.app.dto.UserResponse;
 import com.users.app.entity.UserEntity;
@@ -60,5 +61,25 @@ public class UserTransformerTest {
         assertThat(response.isActive()).isEqualTo(user.isActive());
         assertThat(response.getPhones()).isEqualTo(phones);
     }
+
+    @Test
+    void testToAuthenticatedUser_shouldTransformUserEntityToAuthenticatedUser() {
+        UserEntity user = UserEntityObjectMother.withValues(
+            UUID.randomUUID(),
+            "Julio",
+            "julio@test.com",
+            "encodedPassword123",
+            LocalDateTime.now().minusDays(1),
+            LocalDateTime.now(),
+            true
+        );
+
+        AuthenticatedUser authenticatedUser = UserTransformer.toAuthenticatedUser(user);
+
+        assertThat(authenticatedUser.getId()).isEqualTo(user.getId());
+        assertThat(authenticatedUser.getName()).isEqualTo(user.getName());
+        assertThat(authenticatedUser.getEmail()).isEqualTo(user.getEmail());
+    }
+
 }
 

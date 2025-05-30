@@ -7,15 +7,18 @@ import com.users.app.dto.UserRequest;
 import com.users.app.dto.UserResponse;
 import com.users.app.entity.UserEntity;
 import com.users.app.exception.UserAlreadyExistsException;
+import com.users.app.util.JwtUtil;
 import com.users.app.repository.PhoneRepository;
 import com.users.app.repository.UserRepository;
 import com.users.app.service.UserService;
 import com.users.app.transformer.PhoneTransformer;
 import com.users.app.transformer.UserTransformer;
-import com.users.app.util.JwtUtil;
 
 import io.jsonwebtoken.lang.Collections;
 
+/**
+ * Implements user-related operations including sign-up and validation.
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -34,6 +37,13 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
+    /**
+     * Registers a new user if the email doesn't already exist.
+     *
+     * @param userRequest request DTO with email, password, and optional fields
+     * @return full user response with UUID, token, and timestamps
+     * @throws UserAlreadyExistsException if the email is already registered
+     */
     @Override
     public UserResponse createUser(UserRequest userRequest) {
         userRepository.findByEmail(userRequest.getEmail()).ifPresent(u -> {
@@ -44,11 +54,9 @@ public class UserServiceImpl implements UserService {
         if (!Collections.isEmpty(userRequest.getPhones())) {
             phoneRepository.saveAll(PhoneTransformer.toEntityList(userRequest.getPhones(), createdUser));
         }
-        String token = jwtUtil.generateToken(createdUser.getEmail());
+        final String token = jwtUtil.generateToken(createdUser.getEmail());
 
         return new UserResponse(createdUser.getId(), createdUser.getCreated(), createdUser.getLastLogin(), token, createdUser.isActive());
     }
 
-
 }
-
