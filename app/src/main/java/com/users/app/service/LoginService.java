@@ -4,6 +4,6 @@ import com.users.app.dto.UserResponse;
 
 public interface LoginService {
 
-    UserResponse login(String auth);
+    UserResponse login();
 
 }

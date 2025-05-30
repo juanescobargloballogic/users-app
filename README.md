@@ -58,6 +58,31 @@ Retrieves user info using a valid JWT token (sent as Authorization: Bearer <toke
 ```
 GET /users/login
 ```
+
+## API Documentation (Swagger)
+
+This project includes auto-generated API documentation using **Swagger UI**.
+
+### Access the Swagger UI
+
+After starting the application, open your browser and navigate to:
+http://localhost:8080/swagger-ui.html
+
+### Swagger Setup
+
+Swagger is configured to:
+- Document all public API endpoints
+- Allow testing endpoints directly from the browser
+- Support JWT token authentication via the **Authorize** button
+
+### Using JWT with Swagger
+
+1. After Signing up, take the retrieved token.
+2. Click the **Authorize** button (top-right corner).
+3. Enter your token in the prompted modal.
+4. Submit the form.
+5. Swagger will include the token in the `Authorization` header of all secured endpoint requests.
+
 ## Architecture Diagrams
 The architecture and sequence diagrams included in this project were created using the following free web-based tool:
 

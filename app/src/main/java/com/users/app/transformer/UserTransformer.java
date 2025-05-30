@@ -3,6 +3,7 @@ package com.users.app.transformer;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.users.app.dto.AuthenticatedUser;
 import com.users.app.dto.PhoneDTO;
 import com.users.app.dto.UserRequest;
 import com.users.app.dto.UserResponse;
@@ -39,6 +40,10 @@ public final class UserTransformer {
         response.setPhones(userPhones);
         response.setPassword(user.getPassword());
         return response;
+    }
+
+    public static AuthenticatedUser toAuthenticatedUser(final UserEntity user) {
+        return new AuthenticatedUser(user.getId(), user.getEmail(), user.getName());
     }
 
 }

@@ -12,6 +12,9 @@ import com.users.app.dto.UserResponse;
 import com.users.app.service.UserService;
 import com.users.app.service.impl.UserServiceImpl;
 
+/**
+ * Handles user sign-up requests.
+ */
 @RestController
 @RequestMapping("/users/sign-up")
 public class UserSignUpController {
@@ -22,6 +25,12 @@ public class UserSignUpController {
         this.userService = userService;
     }
 
+    /**
+     * Registers a new user.
+     *
+     * @param request the incoming user data
+     * @return created user response with token and metadata
+     */
     @PostMapping
     public ResponseEntity<UserResponse> signUp(@Validated @RequestBody UserRequest request) {
         return ResponseEntity.ok(userService.createUser(request));
